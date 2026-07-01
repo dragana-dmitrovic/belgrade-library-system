@@ -1,0 +1,12 @@
+package rs.beolib.beolibbackend.jparepo;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import rs.beolib.beolibbackend.model.Book;
+
+public interface BookRepository extends JpaRepository<Book, Long>, JpaSpecificationExecutor<Book> {
+
+    boolean existsByIsbn(String isbn);
+
+    boolean existsByIsbnAndIdNot(String isbn, Long id);
+}

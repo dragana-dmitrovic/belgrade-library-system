@@ -1,0 +1,19 @@
+target/
+*.log
+
+# NetBeans private settings
+nbproject/private/
+
+# IDE files
+.idea/
+*.iml
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Local secrets
+.env
+application-local.properties
+application.properties
