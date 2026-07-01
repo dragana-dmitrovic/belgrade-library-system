@@ -1,19 +1,46 @@
-target/
+# Angular / Node
+**/node_modules/
+**/dist/
+**/.angular/cache/
+**/tmp/
+**/out-tsc/
+**/coverage/
+
+npm-debug.log
+yarn-error.log
 *.log
 
-# NetBeans private settings
-nbproject/private/
+# Environment files
+.env
+.env.*
+!.env.example
 
-# IDE files
+# IDEs and editors
 .idea/
-*.iml
-.vscode/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
 
 # OS files
 .DS_Store
 Thumbs.db
 
-# Local secrets
-.env
-application-local.properties
-application.properties
+# Java / Spring Boot / Maven
+**/target/
+
+# Build folders
+**/build/
+
+# Local project notes
+projekat log.txt
+# Spring Boot sensitive config
+**/src/main/resources/application.properties
+**/src/main/resources/application-*.properties
+**/src/main/resources/application.yml
+**/src/main/resources/application-*.yml
+
+# Keep examples
+!**/src/main/resources/application-example.properties
+!**/src/main/resources/application-example.yml
