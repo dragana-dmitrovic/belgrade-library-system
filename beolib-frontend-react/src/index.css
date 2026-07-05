@@ -1,0 +1,144 @@
+@import './styles/tokens.css';
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-body);
+  background: var(--color-paper);
+  color: var(--color-ink);
+  line-height: 1.55;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.page {
+  max-width: 960px;
+  margin: 1.5rem auto;
+  padding: 0 1rem 2.5rem;
+}
+
+.page h1 {
+  margin-top: 0;
+}
+
+.auth-card {
+  max-width: 420px;
+  margin: 2rem auto;
+  padding: 1.5rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--color-paper);
+  box-shadow: var(--shadow-card);
+}
+
+.auth-card h1 {
+  margin-top: 0;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.auth-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+
+.auth-card input {
+  padding: 0.5rem;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.auth-card button {
+  margin-top: 0.5rem;
+  padding: 0.6rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--color-wine);
+  color: var(--color-paper);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-card button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.message {
+  padding: 0.75rem;
+  border-radius: var(--radius-sm);
+}
+
+.message.success {
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
+}
+
+.message.error,
+.field-error {
+  color: var(--color-wine);
+}
+
+.message.error {
+  background: var(--color-error-bg);
+}
+
+.field-error {
+  margin: -0.35rem 0 0;
+  font-size: 0.875rem;
+}
+
+.hint {
+  margin-bottom: 0;
+  color: var(--color-ink-soft);
+}
+
+.hint a {
+  color: var(--color-wine);
+  font-weight: 600;
+}
+
+.empty-state {
+  padding: 2rem 1rem;
+  text-align: center;
+  color: var(--color-ink-soft);
+}
+
+.loading-state {
+  padding: 1.5rem 0;
+  color: var(--color-ink-soft);
+}
+
+.page-feedback {
+  margin-bottom: 1rem;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  letter-spacing: 0.02em;
+}

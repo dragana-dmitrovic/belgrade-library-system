@@ -19,9 +19,11 @@ import rs.beolib.beolibbackend.model.BookGenre;
 public class BookService {
 
     private final BookRepository bookRepository;
+    private final BranchBookInventoryService branchBookInventoryService;
 
-    public BookService(BookRepository bookRepository) {
+    public BookService(BookRepository bookRepository, BranchBookInventoryService branchBookInventoryService) {
         this.bookRepository = bookRepository;
+        this.branchBookInventoryService = branchBookInventoryService;
     }
 
     @Transactional(readOnly = true)
@@ -42,9 +44,18 @@ public class BookService {
         if (bookRepository.existsByIsbn(request.getIsbn())) {
             throw new IllegalArgumentException("ISBN already exists");
         }
+        if (request.getAvailableCopies() > request.getTotalCopies()) {
+            throw new IllegalArgumentException("Available copies cannot exceed total copies");
+        }
         Book book = new Book();
         applyCreate(request, book);
-        return BookMapper.toDto(bookRepository.save(book));
+        Book saved = bookRepository.save(book);
+        branchBookInventoryService.createDefaultInventory(
+                saved,
+                request.getTotalCopies(),
+                request.getAvailableCopies()
+        );
+        return BookMapper.toDto(saved);
     }
 
     public BookDto update(BookUpdateRequest request) {
@@ -53,8 +64,21 @@ public class BookService {
         if (!book.getIsbn().equals(request.getIsbn()) && bookRepository.existsByIsbnAndIdNot(request.getIsbn(), request.getId())) {
             throw new IllegalArgumentException("ISBN already exists");
         }
+        if (request.getAvailableCopies() > request.getTotalCopies()) {
+            throw new IllegalArgumentException("Available copies cannot exceed total copies");
+        }
+
+        int deltaTotal = request.getTotalCopies() - book.getTotalCopies();
+        int deltaAvailable = request.getAvailableCopies() - book.getAvailableCopies();
+
         applyUpdate(request, book);
-        return BookMapper.toDto(bookRepository.save(book));
+        bookRepository.save(book);
+
+        if (deltaTotal != 0 || deltaAvailable != 0) {
+            branchBookInventoryService.adjustDefaultBranchInventory(book, deltaTotal, deltaAvailable);
+        }
+
+        return BookMapper.toDto(bookRepository.findById(book.getId()).orElseThrow());
     }
 
     public void deleteById(Long id) {

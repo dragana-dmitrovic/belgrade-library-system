@@ -1,0 +1,115 @@
+.books-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: flex-end;
+  margin-bottom: 1.25rem;
+  padding: 1rem;
+  background: var(--color-paper);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+
+.books-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.books-filters input[type='text'],
+.books-filters select {
+  min-width: 180px;
+  padding: 0.5rem;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  background: var(--color-paper);
+}
+
+.books-filters .checkbox-label {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.filter-actions button {
+  padding: 0.5rem 0.9rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--color-wine);
+  color: var(--color-paper);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filter-actions button.secondary {
+  background: var(--color-paper);
+  color: var(--color-wine);
+  border: 1px solid var(--color-wine);
+}
+
+.books-table-wrap {
+  overflow-x: auto;
+  background: var(--color-paper);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+
+.books-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.books-table th,
+.books-table td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.books-table th {
+  background: var(--color-paper-dim);
+  font-size: 0.9rem;
+}
+
+.books-table tbody tr:hover {
+  background: rgba(232, 225, 208, 0.45);
+}
+
+.book-link {
+  color: var(--color-wine);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.book-link:hover {
+  text-decoration: underline;
+}
+
+.status-pill {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  background: rgba(169, 132, 63, 0.15);
+  color: var(--color-ink);
+  border: 1px solid rgba(169, 132, 63, 0.35);
+}
+
+.status-pill.unavailable {
+  background: var(--color-error-bg);
+  color: var(--color-wine);
+  border-color: rgba(107, 38, 52, 0.35);
+}

@@ -15,7 +15,9 @@ public class ReservationDto {
     private UserDto user;
     private BookDto book;
     private BranchDto branch;
+    private Long bookCopyId;
     private LocalDateTime reservedAt;
+    private LocalDateTime expiresAt;
     private LocalDate dueDate;
     private String status;
     private String notes;

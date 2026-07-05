@@ -1,0 +1,138 @@
+.home {
+  padding-bottom: 2.5rem;
+}
+
+.home-hero {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  padding: 3.5rem 1rem 3rem;
+}
+
+.home-hero-inner {
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.home-hero-kicker {
+  margin: 0 0 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-brass);
+}
+
+.home-hero h1 {
+  margin: 0 0 1rem;
+  max-width: 16ch;
+  font-size: clamp(2rem, 5vw, 2.75rem);
+  line-height: 1.15;
+  color: var(--color-paper);
+}
+
+.home-hero-lead {
+  margin: 0 0 1.5rem;
+  max-width: 52ch;
+  color: rgba(242, 237, 225, 0.92);
+  font-size: 1.05rem;
+}
+
+.home-hero-cta {
+  display: inline-block;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--radius-sm);
+  background: var(--color-wine);
+  color: var(--color-paper);
+  text-decoration: none;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.home-hero-cta:hover {
+  filter: brightness(1.06);
+}
+
+.home-section {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem 1rem 0;
+}
+
+.home-section h2 {
+  margin: 0 0 1.25rem;
+  font-size: 1.65rem;
+}
+
+.home-news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.home-news-card {
+  padding: 1.1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--color-paper);
+  box-shadow: var(--shadow-card);
+}
+
+.home-news-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.home-news-date {
+  margin-left: auto;
+  color: var(--color-ink-soft);
+}
+
+.home-news-card h3 {
+  margin: 0 0 0.6rem;
+  font-size: 1.15rem;
+  line-height: 1.3;
+}
+
+.home-news-card p {
+  margin: 0;
+  color: var(--color-ink-soft);
+}
+
+.home-about p {
+  margin: 0 0 1rem;
+  color: var(--color-ink-soft);
+}
+
+.home-about p:last-child {
+  margin-bottom: 0;
+}
+
+.home-branches-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.home-branch-card {
+  padding: 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--color-paper-dim);
+}
+
+.home-branch-card h3 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.home-branch-card p {
+  margin: 0 0 0.45rem;
+  color: var(--color-ink-soft);
+}
+
+.home-branch-phone {
+  color: var(--color-brass);
+}

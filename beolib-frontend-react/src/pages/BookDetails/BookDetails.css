@@ -1,0 +1,142 @@
+.book-details-layout {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 1.5rem;
+  background: var(--color-paper);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-card);
+}
+
+@media (max-width: 720px) {
+  .book-details-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.book-cover {
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.book-cover-placeholder {
+  width: 100%;
+  min-height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-paper-dim);
+  border-radius: var(--radius-md);
+  color: var(--color-ink-soft);
+  font-size: 0.95rem;
+}
+
+.book-meta {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.book-meta p {
+  margin: 0;
+}
+
+.book-meta strong {
+  display: inline-block;
+  min-width: 110px;
+}
+
+.book-actions {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.book-actions button {
+  align-self: flex-start;
+  padding: 0.55rem 1rem;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--color-wine);
+  color: var(--color-paper);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.book-actions button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.admin-note {
+  margin: 0;
+  color: var(--color-ink-soft);
+  font-style: italic;
+}
+
+.book-actions a {
+  color: var(--color-wine);
+  font-weight: 600;
+}
+
+.reservation-form {
+  margin-top: 1rem;
+  padding: 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--color-paper-dim);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-width: 420px;
+}
+
+.reservation-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-weight: 600;
+}
+
+.reservation-form input,
+.reservation-form select,
+.reservation-form textarea {
+  padding: 0.5rem;
+  border: 1px solid var(--border-medium);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  background: var(--color-paper);
+}
+
+.reservation-form textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+.reservation-form-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.reservation-form-actions button.secondary {
+  background: var(--color-paper);
+  color: var(--color-wine);
+  border: 1px solid var(--color-wine);
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+  color: var(--color-wine);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}

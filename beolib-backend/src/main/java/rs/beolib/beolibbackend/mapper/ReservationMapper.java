@@ -17,7 +17,9 @@ public final class ReservationMapper {
                 UserMapper.toDto(r.getUser()),
                 BookMapper.toDto(r.getBook()),
                 BranchMapper.toDto(r.getBranch()),
+                r.getBookCopy() != null ? r.getBookCopy().getId() : null,
                 r.getReservedAt(),
+                r.getExpiresAt(),
                 r.getDueDate(),
                 r.getStatus().name(),
                 r.getNotes()

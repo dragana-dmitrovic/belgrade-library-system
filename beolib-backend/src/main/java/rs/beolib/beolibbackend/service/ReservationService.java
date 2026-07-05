@@ -13,6 +13,7 @@ import rs.beolib.beolibbackend.jparepo.ReservationRepository;
 import rs.beolib.beolibbackend.jparepo.UserRepository;
 import rs.beolib.beolibbackend.mapper.ReservationMapper;
 import rs.beolib.beolibbackend.model.Book;
+import rs.beolib.beolibbackend.model.BranchBookInventory;
 import rs.beolib.beolibbackend.model.LibraryBranch;
 import rs.beolib.beolibbackend.model.Reservation;
 import rs.beolib.beolibbackend.model.ReservationStatus;
@@ -26,17 +27,20 @@ public class ReservationService {
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
     private final LibraryBranchRepository libraryBranchRepository;
+    private final BranchBookInventoryService branchBookInventoryService;
 
     public ReservationService(
             ReservationRepository reservationRepository,
             UserRepository userRepository,
             BookRepository bookRepository,
-            LibraryBranchRepository libraryBranchRepository
+            LibraryBranchRepository libraryBranchRepository,
+            BranchBookInventoryService branchBookInventoryService
     ) {
         this.reservationRepository = reservationRepository;
         this.userRepository = userRepository;
         this.bookRepository = bookRepository;
         this.libraryBranchRepository = libraryBranchRepository;
+        this.branchBookInventoryService = branchBookInventoryService;
     }
 
     public ReservationDto create(String userEmail, ReservationCreateRequest request) {
@@ -53,10 +57,10 @@ public class ReservationService {
         )) {
             throw new IllegalArgumentException("You already have an active reservation for this book");
         }
-        if (book.getAvailableCopies() <= 0) {
-            throw new IllegalArgumentException("No copies available for this book");
-        }
-        book.setAvailableCopies(book.getAvailableCopies() - 1);
+
+        BranchBookInventory inventory = branchBookInventoryService.requireForReservation(book.getId(), branch.getId());
+        branchBookInventoryService.decrementAvailable(inventory);
+
         Reservation reservation = new Reservation();
         reservation.setUser(user);
         reservation.setBook(book);
@@ -88,7 +92,7 @@ public class ReservationService {
                 .orElseThrow(() -> new ResourceNotFoundException("Reservation not found"));
         ReservationStatus oldStatus = reservation.getStatus();
         ReservationStatus newStatus = parseStatus(request.getStatus());
-        applyInventoryTransition(reservation.getBook(), oldStatus, newStatus);
+        applyInventoryTransition(reservation, oldStatus, newStatus);
         reservation.setStatus(newStatus);
         return ReservationMapper.toDto(reservationRepository.save(reservation));
     }
@@ -105,7 +109,7 @@ public class ReservationService {
         if (oldStatus == ReservationStatus.CANCELLED || oldStatus == ReservationStatus.RETURNED) {
             throw new IllegalArgumentException("Reservation is already closed");
         }
-        applyInventoryTransition(reservation.getBook(), oldStatus, ReservationStatus.CANCELLED);
+        applyInventoryTransition(reservation, oldStatus, ReservationStatus.CANCELLED);
         reservation.setStatus(ReservationStatus.CANCELLED);
         return ReservationMapper.toDto(reservationRepository.save(reservation));
     }
@@ -118,7 +122,11 @@ public class ReservationService {
         }
     }
 
-    private void applyInventoryTransition(Book book, ReservationStatus oldStatus, ReservationStatus newStatus) {
+    private void applyInventoryTransition(
+            Reservation reservation,
+            ReservationStatus oldStatus,
+            ReservationStatus newStatus
+    ) {
         if (oldStatus == newStatus) {
             return;
         }
@@ -126,7 +134,7 @@ public class ReservationService {
         boolean newClosed = newStatus == ReservationStatus.CANCELLED || newStatus == ReservationStatus.RETURNED;
 
         if (!oldClosed && newClosed) {
-            book.setAvailableCopies(book.getAvailableCopies() + 1);
+            branchBookInventoryService.incrementAvailable(reservation.getBook(), reservation.getBranch());
             return;
         }
         if (oldClosed && !newClosed) {

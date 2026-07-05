@@ -1,6 +1,8 @@
 package rs.beolib.beolibbackend.exception;
 
+import jakarta.persistence.OptimisticLockException;
 import java.util.stream.Collectors;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,6 +25,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Object>> handleBadRequest(IllegalArgumentException ex) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ApiResponse.of(400, ex.getMessage(), (Object) null));
+    }
+
+    @ExceptionHandler({OptimisticLockException.class, OptimisticLockingFailureException.class})
+    public ResponseEntity<ApiResponse<Object>> handleOptimisticLock(RuntimeException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ApiResponse.of(409, "Inventory was updated by another request. Please try again.", (Object) null));
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
