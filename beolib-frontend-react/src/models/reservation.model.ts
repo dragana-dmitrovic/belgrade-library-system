@@ -9,22 +9,16 @@ export interface Reservation {
   user: User;
   book: Book;
   branch: Branch;
+  bookCopyId?: number | null;
   reservedAt: string;
-  dueDate: string;
+  expiresAt?: string | null;
   status: ReservationStatus | string;
-  notes: string;
+  notes?: string | null;
 }
 
 /** Odgovara backend ReservationCreateRequest. */
 export interface ReservationCreateRequest {
   bookId: number;
   branchId: number;
-  dueDate: string;
   notes?: string;
-}
-
-/** Odgovara backend ReservationStatusUpdateRequest. */
-export interface ReservationStatusUpdateRequest {
-  reservationId: number;
-  status: string;
 }

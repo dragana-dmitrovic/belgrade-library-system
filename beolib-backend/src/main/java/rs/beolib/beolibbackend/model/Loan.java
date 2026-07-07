@@ -48,8 +48,8 @@ public class Loan {
     @JoinColumn(name = "book_copy_id", nullable = false)
     private BookCopy bookCopy;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "reservation_id", nullable = false, unique = true)
+    @OneToOne(fetch = FetchType.LAZY, optional = true)
+    @JoinColumn(name = "reservation_id", nullable = true)
     private Reservation reservation;
 
     @Column(name = "loan_date", nullable = false)

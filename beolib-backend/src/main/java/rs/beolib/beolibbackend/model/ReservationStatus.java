@@ -1,10 +1,8 @@
 package rs.beolib.beolibbackend.model;
 
 public enum ReservationStatus {
-    PENDING,
-    APPROVED,
+    ACTIVE,
     PICKED_UP,
-    RETURNED,
     CANCELLED,
     EXPIRED
 }

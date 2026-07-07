@@ -97,7 +97,7 @@ export function RegisterPage() {
           <p className="field-error">Lozinka mora imati najmanje 6 karaktera.</p>
         )}
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="gold-button" disabled={loading}>
           {loading ? 'Registracija...' : 'Registruj se'}
         </button>
       </form>

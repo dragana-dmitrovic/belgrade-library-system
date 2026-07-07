@@ -1,10 +1,6 @@
 import type { ApiResponse } from '../models/api-response.model';
 import { unwrapValue, unwrapValues } from '../models/api-response.model';
-import type {
-  Reservation,
-  ReservationCreateRequest,
-  ReservationStatusUpdateRequest,
-} from '../models/reservation.model';
+import type { Reservation, ReservationCreateRequest } from '../models/reservation.model';
 import { axiosInstance } from './axiosInstance';
 
 const basePath = '/reservations';
@@ -19,9 +15,18 @@ export async function getMyReservations(): Promise<Reservation[]> {
 export async function createReservation(
   request: ReservationCreateRequest,
 ): Promise<Reservation> {
+  const body: ReservationCreateRequest = {
+    bookId: request.bookId,
+    branchId: request.branchId,
+  };
+
+  if (request.notes?.trim()) {
+    body.notes = request.notes.trim();
+  }
+
   const response = await axiosInstance.post<ApiResponse<Reservation>>(
     `${basePath}/create`,
-    request,
+    body,
   );
   return unwrapValue(response.data);
 }
@@ -35,18 +40,7 @@ export async function cancelReservation(id: number): Promise<Reservation> {
   return unwrapValue(response.data);
 }
 
-/** PUT /api/reservations/updateStatus — ADMIN */
-export async function updateReservationStatus(
-  request: ReservationStatusUpdateRequest,
-): Promise<Reservation> {
-  const response = await axiosInstance.put<ApiResponse<Reservation>>(
-    `${basePath}/updateStatus`,
-    request,
-  );
-  return unwrapValue(response.data);
-}
-
-/** GET /api/reservations/all — ADMIN */
+/** GET /api/reservations/all — LIBRARIAN */
 export async function getAllReservationsForAdmin(): Promise<Reservation[]> {
   const response = await axiosInstance.get<ApiResponse<Reservation>>(`${basePath}/all`);
   return unwrapValues(response.data);

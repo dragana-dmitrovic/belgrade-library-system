@@ -11,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -52,12 +51,9 @@ public class Reservation {
     @Column(name = "expires_at")
     private LocalDateTime expiresAt;
 
-    @Column(name = "due_date", nullable = false)
-    private LocalDate dueDate;
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private ReservationStatus status = ReservationStatus.PENDING;
+    private ReservationStatus status = ReservationStatus.ACTIVE;
 
     @Column(columnDefinition = "TEXT")
     private String notes;

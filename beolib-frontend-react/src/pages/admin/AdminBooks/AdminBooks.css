@@ -4,49 +4,34 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 
 .page-header h1 {
   margin: 0;
 }
 
-.primary-button {
-  padding: 0.55rem 1rem;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: var(--color-wine);
-  color: var(--color-paper);
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.primary-button:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
-
 .admin-form {
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  background: var(--color-paper);
-  border: 1px solid var(--border-subtle);
+  margin-bottom: 1.75rem;
+  padding: 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
   border-radius: var(--radius-md);
   display: grid;
-  gap: 0.75rem;
+  gap: 0.85rem;
   box-shadow: var(--shadow-card);
 }
 
 .admin-form h2 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.15rem;
+  color: var(--text-primary);
 }
 
 .admin-form-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.75rem;
+  gap: 0.85rem;
 }
 
 @media (max-width: 720px) {
@@ -66,16 +51,6 @@
   grid-column: 1 / -1;
 }
 
-.admin-form input,
-.admin-form select,
-.admin-form textarea {
-  padding: 0.5rem;
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-sm);
-  font: inherit;
-  background: var(--color-paper);
-}
-
 .admin-form textarea {
   min-height: 90px;
   resize: vertical;
@@ -83,43 +58,8 @@
 
 .form-actions {
   display: flex;
-  gap: 0.5rem;
-}
-
-.secondary-button {
-  padding: 0.55rem 1rem;
-  border: 1px solid var(--color-wine);
-  border-radius: var(--radius-sm);
-  background: var(--color-paper);
-  color: var(--color-wine);
-  font: inherit;
-  cursor: pointer;
-}
-
-.data-table-wrap {
-  overflow-x: auto;
-  background: var(--color-paper);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-card);
-}
-
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.data-table th,
-.data-table td {
-  padding: 0.75rem;
-  text-align: left;
-  border-bottom: 1px solid var(--border-subtle);
-  vertical-align: top;
-}
-
-.data-table th {
-  background: var(--color-paper-dim);
-  font-size: 0.9rem;
+  flex-wrap: wrap;
+  gap: 0.55rem;
 }
 
 .row-actions {
@@ -129,26 +69,69 @@
 }
 
 .row-actions button {
-  padding: 0.35rem 0.75rem;
+  padding: 0.38rem 0.75rem;
   border-radius: var(--radius-sm);
   font: inherit;
   cursor: pointer;
 }
 
 .edit-button {
-  border: 1px solid var(--color-wine);
-  background: var(--color-paper);
-  color: var(--color-wine);
+  border: 1px solid var(--border-accent);
+  background: var(--bg-panel);
+  color: var(--gold);
 }
 
 .delete-button {
-  border: 1px solid var(--color-wine);
-  background: var(--color-paper);
-  color: var(--color-wine);
+  border: 1px solid rgba(111, 38, 56, 0.35);
+  background: var(--bg-panel);
+  color: var(--color-error-text);
 }
 
 .readonly-note {
   margin: 0 0 1rem;
-  color: var(--color-ink-soft);
-  font-size: 0.95rem;
+  color: var(--text-secondary);
+  font-size: 0.94rem;
+}
+
+.admin-book-cover-thumb-placeholder {
+  /* legacy — fallback uses BookCover.css */
+}
+
+.data-table-wrap-loading {
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+.admin-books-loading {
+  margin-top: 0.75rem;
+}
+
+.admin-books-toolbar {
+  margin-bottom: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+}
+
+.admin-books-search {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-weight: 600;
+  font-size: 0.88rem;
+  max-width: 520px;
+}
+
+.admin-books-search-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.admin-books-search-row input {
+  flex: 1 1 240px;
+  min-width: 0;
 }

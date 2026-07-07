@@ -1,20 +1,26 @@
-import type { Book } from './book.model';
-import type { User } from './user.model';
+import type { BookGenre } from './enums.model';
 
-/** Odgovara backend ReadingHistoryDto. */
-export interface ReadingHistory {
-  id: number;
-  user: User;
-  book: Book;
-  finishedAt: string;
-  rating: number;
-  review: string;
+/** Odgovara backend MyReadingHistoryItemDto. */
+export interface MyReadingHistoryItem {
+  loanId: number;
+  bookId: number;
+  title: string;
+  author: string;
+  genre: BookGenre;
+  coverImageUrl?: string | null;
+  returnedAt: string;
+  dueDate: string;
+  reviewId?: number | null;
+  rating?: number | null;
+  comment?: string | null;
+  reviewDate?: string | null;
+  canReview: boolean;
+  hasReview: boolean;
 }
 
-/** Odgovara backend ReadingHistoryCreateRequest. */
-export interface ReadingHistoryCreateRequest {
+/** Odgovara backend ReadingHistoryReviewRequest. */
+export interface ReadingHistoryReviewRequest {
   bookId: number;
-  finishedAt: string;
   rating: number;
-  review?: string;
+  comment?: string;
 }

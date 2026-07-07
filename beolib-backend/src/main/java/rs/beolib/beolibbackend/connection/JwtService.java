@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import rs.beolib.beolibbackend.model.User;
+import rs.beolib.beolibbackend.util.UserTypeResolver;
 
 @Service
 public class JwtService {
@@ -25,8 +26,12 @@ public class JwtService {
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", user.getRole().name());
+        claims.put("role", resolveRole(user));
         return buildToken(claims, user.getEmail());
+    }
+
+    private String resolveRole(User user) {
+        return UserTypeResolver.resolveRole(user);
     }
 
     private String buildToken(Map<String, Object> extraClaims, String subject) {

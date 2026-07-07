@@ -12,14 +12,13 @@ export type BookGenre =
 
 /** Vrednosti iz backend enum-a ReservationStatus. */
 export type ReservationStatus =
-  | 'PENDING'
-  | 'APPROVED'
+  | 'ACTIVE'
   | 'PICKED_UP'
-  | 'RETURNED'
-  | 'CANCELLED';
+  | 'CANCELLED'
+  | 'EXPIRED';
 
 /** Vrednosti iz backend enum-a UserRole. */
-export type UserRole = 'USER' | 'ADMIN';
+export type UserRole = 'MEMBER' | 'LIBRARIAN';
 
 export const BOOK_GENRES: BookGenre[] = [
   'FICTION',
@@ -34,9 +33,8 @@ export const BOOK_GENRES: BookGenre[] = [
 ];
 
 export const RESERVATION_STATUSES: ReservationStatus[] = [
-  'PENDING',
-  'APPROVED',
+  'ACTIVE',
   'PICKED_UP',
-  'RETURNED',
   'CANCELLED',
+  'EXPIRED',
 ];

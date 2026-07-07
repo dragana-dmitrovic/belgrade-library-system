@@ -1,1 +1,33 @@
-/* Auth stilovi su u src/index.css (.auth-card) */
+/* Auth stranice — Login i Register (Register.css importuje ovaj fajl) */
+
+.auth-card h1 {
+  font-size: 2.1rem;
+  margin-bottom: 0.25rem;
+  color: var(--text-primary);
+}
+
+.auth-card::before {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  margin-bottom: 1rem;
+}
+
+.auth-card input {
+  background: #fff;
+  border-color: var(--border-medium);
+}
+
+/* Uklanja plavi/ljubičasti autofill tint na stranici prijave */
+.auth-card input:-webkit-autofill,
+.auth-card input:-webkit-autofill:hover,
+.auth-card input:-webkit-autofill:focus,
+.auth-card input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+  box-shadow: 0 0 0 1000px #ffffff inset !important;
+  -webkit-text-fill-color: var(--text-primary) !important;
+  caret-color: var(--text-primary);
+  transition: background-color 9999s ease-out 0s;
+}

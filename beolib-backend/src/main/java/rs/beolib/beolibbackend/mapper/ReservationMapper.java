@@ -20,7 +20,6 @@ public final class ReservationMapper {
                 r.getBookCopy() != null ? r.getBookCopy().getId() : null,
                 r.getReservedAt(),
                 r.getExpiresAt(),
-                r.getDueDate(),
                 r.getStatus().name(),
                 r.getNotes()
         );

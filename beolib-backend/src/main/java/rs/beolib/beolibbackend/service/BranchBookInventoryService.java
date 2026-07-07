@@ -111,14 +111,19 @@ public class BranchBookInventoryService {
     public void syncInventoryFromBookCopies(Long bookId, Long branchId) {
         BranchBookInventory inventory = branchBookInventoryRepository
                 .findByBook_IdAndBranch_Id(bookId, branchId)
-                .orElseThrow(() -> new IllegalStateException(
-                        "Branch inventory missing for book " + bookId + " and branch " + branchId));
+                .orElseThrow(() -> new IllegalArgumentException(
+                        "Book is not available at the selected branch"));
         int totalCopies = (int) bookCopyRepository.countByBook_IdAndBranch_Id(bookId, branchId);
         int availableCopies = (int) bookCopyRepository.countByBook_IdAndBranch_IdAndStatus(
                 bookId, branchId, BookCopyStatus.AVAILABLE);
         inventory.setTotalCopies(totalCopies);
         inventory.setAvailableCopies(availableCopies);
         branchBookInventoryRepository.save(inventory);
+    }
+
+    public void syncAfterBookCopyChange(Long bookId, Long branchId) {
+        syncInventoryFromBookCopies(bookId, branchId);
+        syncBookAggregatesByBookId(bookId);
     }
 
     public void syncBookAggregatesByBookId(Long bookId) {

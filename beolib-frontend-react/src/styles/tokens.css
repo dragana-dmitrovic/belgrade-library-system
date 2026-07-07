@@ -1,37 +1,102 @@
 :root {
-  --color-ink: #1b2a45;
-  --color-paper: #f2ede1;
-  --color-wine: #6b2634;
-  --color-brass: #a9843f;
-  --color-ink-soft: #4a5a72;
-  --color-paper-dim: #e8e1d0;
+  /* Light library palette */
+  --bg-main: #faf6ee;
+  --bg-panel: #f5f0e6;
+  --bg-card: #efe7d8;
+  --bg-card-soft: #e8dfcf;
 
-  --color-success-bg: #e6ece0;
-  --color-success-text: #2f4a38;
-  --color-error-bg: rgba(107, 38, 52, 0.08);
+  --text-primary: #3b2a1e;
+  --text-secondary: #7a6a58;
 
-  --border-subtle: rgba(27, 42, 69, 0.14);
-  --border-medium: rgba(27, 42, 69, 0.24);
+  --gold: #1e4d5c;
+  --gold-soft: #2a6578;
+  --gold-hover: #163947;
+  --accent-text-on: #ffffff;
+  --accent-ring: rgba(30, 77, 92, 0.22);
+  --wine: #6f2638;
+  --wine-hover: #853044;
+  --wood: #4a3728;
 
-  --font-display: 'Newsreader', Georgia, 'Times New Roman', serif;
-  --font-body: 'Source Sans 3', 'Segoe UI', sans-serif;
+  --border-soft: #d8cbb0;
+  --border-medium: #c9b896;
+  --border-accent: rgba(30, 77, 92, 0.4);
+
+  --shadow-card: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-soft: 0 1px 4px rgba(0, 0, 0, 0.05);
+  --shadow-deep: 0 8px 24px rgba(59, 42, 30, 0.1);
+
+  /* Semantic aliases used across components */
+  --cream: var(--text-primary);
+  --cream-muted: var(--text-secondary);
+
+  --color-bg: var(--bg-main);
+  --color-bg-elevated: var(--bg-panel);
+  --color-bg-card: var(--bg-card);
+  --color-bg-card-hover: var(--bg-card-soft);
+  --color-ink: var(--text-primary);
+  --color-ink-soft: var(--text-secondary);
+  --color-paper: var(--bg-card);
+  --color-paper-dim: var(--bg-card-soft);
+  --color-wine: var(--wine);
+  --color-wine-hover: var(--wine-hover);
+  --color-brass: var(--gold);
+  --color-brass-soft: rgba(30, 77, 92, 0.1);
+  --color-accent: var(--gold);
+  --border-subtle: var(--border-soft);
+
+  --color-success-bg: #e8f0e4;
+  --color-success-text: #3d5c3a;
+  --color-error-bg: #f8e8eb;
+  --color-error-text: #7a2e3a;
+
+  --font-display: 'Playfair Display', 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  --font-body: 'Inter', 'Source Sans 3', system-ui, -apple-system, sans-serif;
   --font-mono: 'IBM Plex Mono', 'Consolas', monospace;
 
-  --radius-sm: 4px;
-  --radius-md: 6px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
 
-  --shadow-card: 0 2px 10px rgba(27, 42, 69, 0.07);
+  --transition-fast: 180ms ease;
+  --transition-reveal: 720ms cubic-bezier(0.22, 1, 0.36, 1);
+  --reveal-offset: 18px;
 }
 
 .library-stamp {
   display: inline-block;
-  padding: 0.15rem 0.45rem;
-  border: 1.5px solid var(--color-wine);
-  color: var(--color-wine);
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--gold);
+  color: var(--gold);
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
+  font-size: 0.65rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  transform: rotate(-3deg);
-  background: transparent;
+  transform: rotate(-2deg);
+  background: rgba(30, 77, 92, 0.08);
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid var(--border-accent);
+  background: var(--color-brass-soft);
+  color: var(--gold);
+}
+
+.badge-muted {
+  border-color: var(--border-soft);
+  background: var(--bg-panel);
+  color: var(--text-secondary);
+}
+
+.badge-success {
+  border-color: rgba(61, 92, 58, 0.25);
+  background: var(--color-success-bg);
+  color: var(--color-success-text);
 }

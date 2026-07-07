@@ -2,13 +2,25 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
 } from 'react';
 
 import * as authApi from '../api/authApi';
-import { TOKEN_KEY, USER_KEY, USER_ROLE_KEY } from '../auth/auth.constants';
+import {
+  AUTH_CLEARED_EVENT,
+  USER_KEY,
+  clearLegacyLocalStorageAuth,
+  clearStoredSession,
+  ensureValidStoredSession,
+  hasValidStoredSession,
+  isValidUserRole,
+  persistSession,
+  readStoredRole,
+  sanitizeLegacyRoleStorage,
+} from '../auth/auth.constants';
 import type { LoginRequest, RegisterRequest } from '../models/auth.model';
 import type { UserRole } from '../models/enums.model';
 import type { User } from '../models/user.model';
@@ -19,70 +31,112 @@ interface AuthContextValue {
   register: (request: RegisterRequest) => Promise<void>;
   logout: () => void;
   isLoggedIn: () => boolean;
-  isAdmin: () => boolean;
+  isLibrarian: () => boolean;
   getCurrentUserRole: () => UserRole | null;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
-function readStoredUser(): User | null {
-  const raw = localStorage.getItem(USER_KEY);
+function loadUserFromSession(): User | null {
+  clearLegacyLocalStorageAuth();
+  sanitizeLegacyRoleStorage();
+  if (!ensureValidStoredSession()) {
+    return null;
+  }
+
+  const raw = sessionStorage.getItem(USER_KEY);
   if (!raw) {
     return null;
   }
 
   try {
-    return JSON.parse(raw) as User;
+    const parsed = JSON.parse(raw) as User;
+    if (!isValidUserRole(parsed.role)) {
+      return null;
+    }
+    return parsed;
   } catch {
     return null;
   }
 }
 
-function readStoredRole(): UserRole | null {
-  const role = localStorage.getItem(USER_ROLE_KEY);
-  if (role === 'USER' || role === 'ADMIN') {
-    return role;
-  }
-  return null;
-}
-
-function saveSession(token: string, user: User): void {
-  localStorage.setItem(TOKEN_KEY, token);
-  localStorage.setItem(USER_KEY, JSON.stringify(user));
-  localStorage.setItem(USER_ROLE_KEY, user.role);
-}
-
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(() => readStoredUser());
+  const [user, setUser] = useState<User | null>(() => loadUserFromSession());
+
+  const logout = useCallback((): void => {
+    clearStoredSession();
+    setUser(null);
+  }, []);
+
+  const reconcileSession = useCallback((): void => {
+    sanitizeLegacyRoleStorage();
+
+    if (!hasValidStoredSession()) {
+      if (user !== null) {
+        setUser(null);
+      }
+      return;
+    }
+
+    const storedUser = loadUserFromSession();
+    if (storedUser === null) {
+      setUser(null);
+      return;
+    }
+
+    if (user?.id !== storedUser.id || user?.role !== storedUser.role) {
+      setUser(storedUser);
+    }
+  }, [user]);
+
+  useEffect(() => {
+    reconcileSession();
+
+    function handleAuthCleared() {
+      setUser(null);
+    }
+
+    function handleFocus() {
+      reconcileSession();
+    }
+
+    window.addEventListener(AUTH_CLEARED_EVENT, handleAuthCleared);
+    window.addEventListener('focus', handleFocus);
+    return () => {
+      window.removeEventListener(AUTH_CLEARED_EVENT, handleAuthCleared);
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, [reconcileSession]);
 
   const isLoggedIn = useCallback((): boolean => {
-    return !!localStorage.getItem(TOKEN_KEY);
-  }, []);
+    return user !== null && hasValidStoredSession();
+  }, [user]);
 
   const getCurrentUserRole = useCallback((): UserRole | null => {
+    if (!isLoggedIn()) {
+      return null;
+    }
     return readStoredRole();
-  }, []);
+  }, [isLoggedIn]);
 
-  const isAdmin = useCallback((): boolean => {
-    return getCurrentUserRole() === 'ADMIN';
+  const isLibrarian = useCallback((): boolean => {
+    return getCurrentUserRole() === 'LIBRARIAN';
   }, [getCurrentUserRole]);
 
   const login = useCallback(async (request: LoginRequest): Promise<void> => {
     const response = await authApi.login(request);
-    saveSession(response.token, response.user);
+
+    persistSession({
+      token: response.token,
+      user: response.user,
+    });
+
     setUser(response.user);
   }, []);
 
   /** Ne čuva token — nakon registracije korisnik ide na /login. */
   const register = useCallback(async (request: RegisterRequest): Promise<void> => {
     await authApi.register(request);
-  }, []);
-
-  const logout = useCallback((): void => {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
-    localStorage.removeItem(USER_ROLE_KEY);
-    setUser(null);
   }, []);
 
   const value = useMemo<AuthContextValue>(
@@ -92,10 +146,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       register,
       logout,
       isLoggedIn,
-      isAdmin,
+      isLibrarian,
       getCurrentUserRole,
     }),
-    [user, login, register, logout, isLoggedIn, isAdmin, getCurrentUserRole],
+    [user, login, register, logout, isLoggedIn, isLibrarian, getCurrentUserRole],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

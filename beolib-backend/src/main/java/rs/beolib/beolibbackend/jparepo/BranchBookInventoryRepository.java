@@ -1,5 +1,6 @@
 package rs.beolib.beolibbackend.jparepo;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,6 +13,8 @@ public interface BranchBookInventoryRepository extends JpaRepository<BranchBookI
     Optional<BranchBookInventory> findByBook_IdAndBranch_Id(Long bookId, Long branchId);
 
     List<BranchBookInventory> findAllByBook_Id(Long bookId);
+
+    List<BranchBookInventory> findAllByBranch_IdAndBook_IdIn(Long branchId, Collection<Long> bookIds);
 
     @Query("""
             SELECT i FROM BranchBookInventory i

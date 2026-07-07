@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { cancelReservation, getMyReservations } from '../../api/reservationApi';
+import { ScrollReveal } from '../../components/ScrollReveal/ScrollReveal';
 import type { Reservation } from '../../models/reservation.model';
 import { getApiErrorMessage } from '../../utils/api-error.util';
-import { formatDate, formatDateTime } from '../../utils/date.util';
+import { formatDateTime } from '../../utils/date.util';
 import {
   canCancelReservation,
   formatReservationStatus,
@@ -11,10 +13,10 @@ import {
 import './Reservations.css';
 
 function statusPillClass(status: string): string {
-  if (status === 'CANCELLED') {
+  if (status === 'CANCELLED' || status === 'EXPIRED') {
     return 'status-pill cancelled';
   }
-  if (status === 'RETURNED') {
+  if (status === 'PICKED_UP') {
     return 'status-pill closed';
   }
   return 'status-pill';
@@ -70,8 +72,12 @@ export function ReservationsPage() {
   }
 
   return (
-    <div className="page">
-      <h1>Moje rezervacije</h1>
+    <div className="page-shell reservations-page">
+      <ScrollReveal>
+        <p className="eyebrow">Članstvo</p>
+        <h1>Moje rezervacije</h1>
+        <p className="page-lead">Pregled aktivnih i završenih rezervacija u elegantnom pregledu.</p>
+      </ScrollReveal>
 
       {successMessage && (
         <p className="message success page-feedback">{successMessage}</p>
@@ -81,50 +87,53 @@ export function ReservationsPage() {
       {loading ? (
         <p className="loading-state">Učitavanje rezervacija...</p>
       ) : reservations.length === 0 ? (
-        <div className="empty-state">Nemaš rezervacija.</div>
+        <div className="empty-state">
+          <p>Nemaš rezervacija.</p>
+          <p className="muted-text">
+            Pretraži <Link to="/books">katalog</Link> i rezerviši primerak u filijali po izboru.
+          </p>
+        </div>
       ) : (
-        <div className="data-table-wrap">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Knjiga</th>
-                <th>Filijala</th>
-                <th>Rezervisano</th>
-                <th>Rok vraćanja</th>
-                <th>Status</th>
-                <th>Akcija</th>
-              </tr>
-            </thead>
-            <tbody>
-              {reservations.map((reservation) => (
-                <tr key={reservation.id}>
-                  <td>{reservation.book.title}</td>
-                  <td>{reservation.branch.name}</td>
-                  <td>{formatDateTime(reservation.reservedAt)}</td>
-                  <td>{formatDate(reservation.dueDate)}</td>
-                  <td>
-                    <span className={statusPillClass(reservation.status)}>
-                      {formatReservationStatus(reservation.status)}
-                    </span>
-                  </td>
-                  <td>
-                    {canCancelReservation(reservation.status) ? (
-                      <button
-                        type="button"
-                        className="action-button"
-                        disabled={cancellingId === reservation.id}
-                        onClick={() => void handleCancel(reservation)}
-                      >
-                        {cancellingId === reservation.id ? 'Otkazivanje...' : 'Otkaži'}
-                      </button>
-                    ) : (
-                      '—'
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="reservations-grid">
+          {reservations.map((reservation, index) => (
+            <ScrollReveal key={reservation.id} delay={(index % 3) * 80}>
+              <article className="reservation-card luxury-card">
+                <div className="reservation-card-head">
+                  <h2>{reservation.book.title}</h2>
+                  <span className={statusPillClass(reservation.status)}>
+                    {formatReservationStatus(reservation.status)}
+                  </span>
+                </div>
+                <p className="reservation-card-author muted-text">{reservation.book.author}</p>
+                <dl className="reservation-meta">
+                  <div>
+                    <dt>Filijala</dt>
+                    <dd>{reservation.branch.name}</dd>
+                  </div>
+                  <div>
+                    <dt>Rezervisano</dt>
+                    <dd>{formatDateTime(reservation.reservedAt)}</dd>
+                  </div>
+                  <div>
+                    <dt>Ističe</dt>
+                    <dd>
+                      {reservation.expiresAt ? formatDateTime(reservation.expiresAt) : '—'}
+                    </dd>
+                  </div>
+                </dl>
+                {canCancelReservation(reservation.status) && (
+                  <button
+                    type="button"
+                    className="ghost-button reservation-cancel"
+                    disabled={cancellingId === reservation.id}
+                    onClick={() => void handleCancel(reservation)}
+                  >
+                    {cancellingId === reservation.id ? 'Otkazivanje...' : 'Otkaži rezervaciju'}
+                  </button>
+                )}
+              </article>
+            </ScrollReveal>
+          ))}
         </div>
       )}
     </div>

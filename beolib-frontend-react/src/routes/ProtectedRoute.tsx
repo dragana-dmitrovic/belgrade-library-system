@@ -4,9 +4,9 @@ import { useAuth } from '../context/AuthContext';
 
 /** Dozvoljava pristup samo ulogovanim korisnicima; inače redirect na /login. */
 export function ProtectedRoute({ children }: { children: React.ReactNode }) {
-  const { isLoggedIn } = useAuth();
+  const { user } = useAuth();
 
-  if (!isLoggedIn()) {
+  if (!user) {
     return <Navigate to="/login" replace />;
   }
 

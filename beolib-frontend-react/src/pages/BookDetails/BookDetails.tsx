@@ -1,13 +1,16 @@
-import { useCallback, useEffect, useState, type FormEvent } from 'react';
+import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
-import { getBookById, getBranchAvailabilityForBook } from '../../api/bookApi';
+import { getBookById, getBookReviews, getBranchAvailabilityForBook } from '../../api/bookApi';
 import { createReservation } from '../../api/reservationApi';
 import { useAuth } from '../../context/AuthContext';
+import { BookCover } from '../../components/BookCover/BookCover';
+import { ScrollReveal } from '../../components/ScrollReveal/ScrollReveal';
 import type { BookBranchAvailability } from '../../models/book-branch-availability.model';
 import type { Book } from '../../models/book.model';
+import type { BookReview } from '../../models/book-review.model';
 import { getApiErrorMessage } from '../../utils/api-error.util';
-import { todayIsoDate } from '../../utils/date.util';
+import { formatDate } from '../../utils/date.util';
 import { formatGenre } from '../../utils/genre.util';
 import './BookDetails.css';
 
@@ -21,12 +24,36 @@ function formatBranchOption(branch: BookBranchAvailability): string {
   return `${branch.branchName} — ${branch.availableCopies} dostupno`;
 }
 
+function renderStars(rating: number): string {
+  return '★'.repeat(rating) + '☆'.repeat(5 - rating);
+}
+
+function getAverageRating(reviews: BookReview[]): number | null {
+  const ratedReviews = reviews.filter((review) => review.rating != null);
+  if (ratedReviews.length === 0) {
+    return null;
+  }
+
+  const sum = ratedReviews.reduce((total, review) => total + (review.rating ?? 0), 0);
+  return sum / ratedReviews.length;
+}
+
+function formatReviewCount(count: number): string {
+  if (count === 1) {
+    return '1 recenzija';
+  }
+  if (count >= 2 && count <= 4) {
+    return `${count} recenzije`;
+  }
+  return `${count} recenzija`;
+}
+
 export function BookDetailsPage() {
   const { id: idParam } = useParams();
   const bookId = Number(idParam);
-  const { isLoggedIn, isAdmin } = useAuth();
-  const loggedIn = isLoggedIn();
-  const admin = isAdmin();
+  const { user } = useAuth();
+  const member = user?.role === 'MEMBER';
+  const librarian = user?.role === 'LIBRARIAN';
 
   const [book, setBook] = useState<Book | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,13 +64,17 @@ export function BookDetailsPage() {
   const [branchesLoading, setBranchesLoading] = useState(false);
   const [branchUnavailableMessage, setBranchUnavailableMessage] = useState<string | null>(null);
   const [branchId, setBranchId] = useState('');
-  const [dueDate, setDueDate] = useState('');
   const [notes, setNotes] = useState('');
   const [reservationLoading, setReservationLoading] = useState(false);
   const [reservationError, setReservationError] = useState<string | null>(null);
   const [reservationSuccess, setReservationSuccess] = useState<string | null>(null);
 
+  const [reviews, setReviews] = useState<BookReview[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [reviewsError, setReviewsError] = useState<string | null>(null);
+
   const reservableBranches = getReservableBranches(branchAvailability);
+  const averageRating = useMemo(() => getAverageRating(reviews), [reviews]);
 
   const loadBranchAvailability = useCallback(async (): Promise<BookBranchAvailability[]> => {
     if (!book) {
@@ -96,6 +127,29 @@ export function BookDetailsPage() {
   }, [bookId]);
 
   useEffect(() => {
+    if (!Number.isFinite(bookId)) {
+      return;
+    }
+
+    async function loadReviews() {
+      setReviewsLoading(true);
+      setReviewsError(null);
+
+      try {
+        const data = await getBookReviews(bookId);
+        setReviews(data);
+      } catch (error) {
+        setReviews([]);
+        setReviewsError(getApiErrorMessage(error, 'Recenzije nisu učitane.'));
+      } finally {
+        setReviewsLoading(false);
+      }
+    }
+
+    void loadReviews();
+  }, [bookId]);
+
+  useEffect(() => {
     if (!showReservationForm || !book) {
       return;
     }
@@ -121,7 +175,6 @@ export function BookDetailsPage() {
     setReservationError(null);
     setReservationSuccess(null);
     setBranchUnavailableMessage(null);
-    setDueDate('');
     setNotes('');
     setBranchAvailability([]);
     setShowReservationForm(true);
@@ -137,8 +190,8 @@ export function BookDetailsPage() {
   async function handleReservationSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!book || !branchId || !dueDate) {
-      setReservationError('Popunite filijalu i datum vraćanja.');
+    if (!book || !branchId) {
+      setReservationError('Izaberite filijalu.');
       return;
     }
 
@@ -167,7 +220,6 @@ export function BookDetailsPage() {
       await createReservation({
         bookId: book.id,
         branchId: Number(branchId),
-        dueDate,
         notes: notes.trim() || undefined,
       });
       setReservationSuccess('Rezervacija je uspešno kreirana.');
@@ -214,19 +266,26 @@ export function BookDetailsPage() {
   const noCopiesAvailable = book.availableCopies === 0;
 
   return (
-    <div className="page">
+    <div className="page-shell book-details-page">
       <Link to="/books" className="back-link">
         ← Nazad na knjige
       </Link>
 
-      <h1>{book.title}</h1>
+      <ScrollReveal>
+        <p className="eyebrow">{formatGenre(book.genre)}</p>
+        <h1>{book.title}</h1>
+      </ScrollReveal>
 
-      <div className="book-details-layout">
-        {book.coverImageUrl ? (
-          <img src={book.coverImageUrl} alt={book.title} className="book-cover" />
-        ) : (
-          <div className="book-cover-placeholder">Nema slike</div>
-        )}
+      <ScrollReveal delay={100}>
+      <div className="book-details-layout luxury-card">
+        <div className="book-details-cover-wrap">
+        <BookCover
+          coverImageUrl={book.coverImageUrl}
+          title={book.title}
+          author={book.author}
+          imageClassName="book-cover"
+        />
+        </div>
 
         <div>
           <div className="book-meta">
@@ -248,17 +307,17 @@ export function BookDetailsPage() {
           </div>
 
           <div className="book-actions">
-            {!loggedIn && (
+            {!user && (
               <p>
                 <Link to="/login">Uloguj se da rezervišeš</Link>
               </p>
             )}
 
-            {loggedIn && admin && (
-              <p className="admin-note">Administratori ne rezervišu knjige.</p>
+            {librarian && (
+              <p className="admin-note">Bibliotekari ne prave korisničke rezervacije.</p>
             )}
 
-            {loggedIn && !admin && (
+            {member && (
               <>
                 {noCopiesAvailable && !branchUnavailableMessage && (
                   <p className="message error">Nema dostupnih primeraka</p>
@@ -275,6 +334,7 @@ export function BookDetailsPage() {
                 {!showReservationForm && (
                   <button
                     type="button"
+                    className="gold-button"
                     disabled={noCopiesAvailable}
                     onClick={openReservationForm}
                   >
@@ -287,7 +347,7 @@ export function BookDetailsPage() {
                 )}
 
                 {showReservationForm && !branchesLoading && reservableBranches.length > 0 && (
-                  <form className="reservation-form" onSubmit={handleReservationSubmit}>
+                  <form className="reservation-form luxury-card" onSubmit={handleReservationSubmit}>
                     <h2>Nova rezervacija</h2>
 
                     <label>
@@ -306,17 +366,6 @@ export function BookDetailsPage() {
                     </label>
 
                     <label>
-                      Datum vraćanja
-                      <input
-                        type="date"
-                        value={dueDate}
-                        min={todayIsoDate()}
-                        onChange={(event) => setDueDate(event.target.value)}
-                        required
-                      />
-                    </label>
-
-                    <label>
                       Napomena (opciono)
                       <textarea
                         value={notes}
@@ -326,12 +375,12 @@ export function BookDetailsPage() {
                     </label>
 
                     <div className="reservation-form-actions">
-                      <button type="submit" disabled={reservationLoading}>
+                      <button type="submit" className="gold-button" disabled={reservationLoading}>
                         {reservationLoading ? 'Slanje...' : 'Potvrdi rezervaciju'}
                       </button>
                       <button
                         type="button"
-                        className="secondary"
+                        className="ghost-button"
                         onClick={closeReservationForm}
                         disabled={reservationLoading}
                       >
@@ -349,6 +398,68 @@ export function BookDetailsPage() {
           </div>
         </div>
       </div>
+      </ScrollReveal>
+
+      <ScrollReveal delay={180}>
+        <section className="book-reviews-section" aria-labelledby="book-reviews-heading">
+          <div className="book-reviews-header">
+            <h2 id="book-reviews-heading">Recenzije čitalaca</h2>
+            {!reviewsLoading && reviews.length > 0 && (
+              <div className="book-reviews-summary">
+                {averageRating != null && (
+                  <p className="book-reviews-average">
+                    <span className="rating-stars" aria-hidden="true">
+                      {renderStars(Math.round(averageRating))}
+                    </span>
+                    <span className="book-reviews-average-value">
+                      {averageRating.toFixed(1)} / 5
+                    </span>
+                  </p>
+                )}
+                <p className="book-reviews-count">{formatReviewCount(reviews.length)}</p>
+              </div>
+            )}
+          </div>
+
+          {reviewsLoading && (
+            <p className="loading-state">Učitavanje recenzija...</p>
+          )}
+
+          {!reviewsLoading && reviewsError && (
+            <p className="message error">{reviewsError}</p>
+          )}
+
+          {!reviewsLoading && !reviewsError && reviews.length === 0 && (
+            <p className="book-reviews-empty">Još nema recenzija za ovu knjigu.</p>
+          )}
+
+          {!reviewsLoading && !reviewsError && reviews.length > 0 && (
+            <div className="book-reviews-grid">
+              {reviews.map((review, index) => (
+                <article
+                  key={`${review.reviewDate}-${index}`}
+                  className="book-review-card luxury-card"
+                >
+                  <div className="book-review-card-head">
+                    <p className="book-review-author">{review.reviewerLabel}</p>
+                    {review.rating != null && (
+                      <p className="rating-stars" aria-label={`Ocena ${review.rating} od 5`}>
+                        {renderStars(review.rating)}
+                      </p>
+                    )}
+                  </div>
+                  {review.comment && (
+                    <p className="book-review-comment">{review.comment}</p>
+                  )}
+                  <p className="book-review-date">
+                    <time>{formatDate(review.reviewDate)}</time>
+                  </p>
+                </article>
+              ))}
+            </div>
+          )}
+        </section>
+      </ScrollReveal>
     </div>
   );
 }

@@ -3,13 +3,17 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 /**
- * Dozvoljava pristup samo ADMIN korisnicima.
- * Ulogovan USER ili gost ide na /books.
+ * Dozvoljava pristup samo LIBRARIAN korisnicima.
+ * Ulogovan MEMBER ili gost ide na /books.
  */
 export function AdminRoute({ children }: { children: React.ReactNode }) {
-  const { isAdmin } = useAuth();
+  const { user } = useAuth();
 
-  if (!isAdmin()) {
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (user.role !== 'LIBRARIAN') {
     return <Navigate to="/books" replace />;
   }
 

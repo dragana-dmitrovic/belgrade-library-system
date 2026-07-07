@@ -13,8 +13,8 @@ import rs.beolib.beolibbackend.dto.TokenResponse;
 import rs.beolib.beolibbackend.dto.UserDto;
 import rs.beolib.beolibbackend.jparepo.UserRepository;
 import rs.beolib.beolibbackend.mapper.UserMapper;
+import rs.beolib.beolibbackend.model.Member;
 import rs.beolib.beolibbackend.model.User;
-import rs.beolib.beolibbackend.model.UserRole;
 
 @Service
 @Transactional
@@ -53,13 +53,12 @@ public class AuthService {
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email is already registered");
         }
-        User user = new User();
-        user.setEmail(request.getEmail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setFirstName(request.getFirstName());
-        user.setLastName(request.getLastName());
-        user.setRole(UserRole.USER);
-        user = userRepository.save(user);
-        return new TokenResponse(jwtService.generateToken(user));
+        Member member = new Member();
+        member.setEmail(request.getEmail());
+        member.setPassword(passwordEncoder.encode(request.getPassword()));
+        member.setFirstName(request.getFirstName());
+        member.setLastName(request.getLastName());
+        member = userRepository.save(member);
+        return new TokenResponse(jwtService.generateToken(member));
     }
 }

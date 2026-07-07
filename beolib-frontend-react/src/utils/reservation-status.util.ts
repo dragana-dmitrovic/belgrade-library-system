@@ -2,24 +2,30 @@ import { RESERVATION_STATUSES, type ReservationStatus } from '../models/enums.mo
 
 /** Čitljiv prikaz backend enum vrednosti statusa rezervacije. */
 const STATUS_LABELS: Record<ReservationStatus, string> = {
-  PENDING: 'Na čekanju',
-  APPROVED: 'Odobreno',
-  PICKED_UP: 'Preuzeto',
-  RETURNED: 'Vraćeno',
-  CANCELLED: 'Otkazano',
+  ACTIVE: 'Aktivna',
+  PICKED_UP: 'Preuzeta',
+  CANCELLED: 'Otkazana',
+  EXPIRED: 'Istekla',
 };
 
 export function formatReservationStatus(status: string): string {
   if ((RESERVATION_STATUSES as string[]).includes(status)) {
     return STATUS_LABELS[status as ReservationStatus];
   }
-  return status;
+  return 'Nepoznat status';
 }
 
-/**
- * Backend dozvoljava cancel (PUT /{id}/cancel) za sve statuse osim CANCELLED i RETURNED.
- * PICKED_UP se takođe može otkazati — usklađeno sa ReservationService.cancelMine().
- */
+/** Backend dozvoljava cancel samo za ACTIVE rezervacije. */
 export function canCancelReservation(status: string): boolean {
-  return status !== 'CANCELLED' && status !== 'RETURNED';
+  return status === 'ACTIVE';
+}
+
+export function reservationStatusPillClass(status: string): string {
+  if (status === 'EXPIRED' || status === 'CANCELLED') {
+    return 'status-pill cancelled';
+  }
+  if (status === 'PICKED_UP') {
+    return 'status-pill closed';
+  }
+  return 'status-pill';
 }

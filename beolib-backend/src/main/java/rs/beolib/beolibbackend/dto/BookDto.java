@@ -18,4 +18,6 @@ public class BookDto {
     private String coverImageUrl;
     private int totalCopies;
     private int availableCopies;
+    private Integer selectedBranchTotalCopies;
+    private Integer selectedBranchAvailableCopies;
 }

@@ -31,12 +31,7 @@ export function AdminBranchesPage() {
 
   return (
     <div className="page">
-      <h1>Admin — filijale</h1>
-
-      <p className="readonly-note">
-        Trenutno je dostupan samo pregled filijala. Dodavanje i izmena filijala zahteva
-        backend podršku i poseban zadatak.
-      </p>
+      <h1>Filijale</h1>
 
       {errorMessage && <p className="message error page-feedback">{errorMessage}</p>}
 

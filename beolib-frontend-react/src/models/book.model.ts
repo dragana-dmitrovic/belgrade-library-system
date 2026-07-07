@@ -11,12 +11,12 @@ export interface Book {
   coverImageUrl: string;
   totalCopies: number;
   availableCopies: number;
+  selectedBranchTotalCopies?: number | null;
+  selectedBranchAvailableCopies?: number | null;
 }
-
-/** Odgovara backend BookCreateRequest. */
 export interface BookCreateRequest {
   title: string;
-  author: string;
+  authorName: string;
   isbn: string;
   genre: string;
   description?: string;
@@ -29,7 +29,7 @@ export interface BookCreateRequest {
 export interface BookUpdateRequest {
   id: number;
   title: string;
-  author: string;
+  authorName: string;
   isbn: string;
   genre: string;
   description?: string;
@@ -38,9 +38,53 @@ export interface BookUpdateRequest {
   availableCopies: number;
 }
 
-/** Query parametri za GET /api/books/all */
+/** Query parametri za GET /api/books/all i GET /api/books */
 export interface BookSearchParams {
   search?: string;
   genre?: string;
   available?: boolean;
+  branchId?: number;
+}
+
+/** Odgovara backend PagedResponse<T>. */
+export interface PagedResponse<T> {
+  values: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+}
+
+/** Query parametri za GET /api/books (paginirano). */
+export interface BookPagedParams extends BookSearchParams {
+  page?: number;
+  size?: number;
+  sortBy?: string;
+  sortDirection?: 'asc' | 'desc';
+}
+
+/** Odgovara backend BookMetadataLookupDto (ISBN lookup). */
+export interface BookMetadataLookup {
+  isbn: string;
+  title: string;
+  authorName: string | null;
+  genre: string;
+  coverImageUrl: string | null;
+  description: string | null;
+}
+
+export interface BranchCopyAllocation {
+  branchId: number;
+  copyCount: number;
+}
+
+/** Odgovara backend BookCreateWithInventoryRequest. */
+export interface BookCreateWithInventoryRequest {
+  isbn: string;
+  title: string;
+  authorName: string;
+  genre: string;
+  description?: string;
+  coverImageUrl?: string | null;
+  branchAllocations: BranchCopyAllocation[];
 }

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import rs.beolib.beolibbackend.dto.ApiResponse;
 import rs.beolib.beolibbackend.dto.ReservationCreateRequest;
 import rs.beolib.beolibbackend.dto.ReservationDto;
-import rs.beolib.beolibbackend.dto.ReservationStatusUpdateRequest;
 import rs.beolib.beolibbackend.service.ReservationService;
 
 @RestController
@@ -46,14 +45,6 @@ public class ReservationController {
     public ResponseEntity<ApiResponse<ReservationDto>> all() {
         List<ReservationDto> list = reservationService.findAll();
         return ResponseEntity.ok(ApiResponse.ok("All reservations", list));
-    }
-
-    @PutMapping("/updateStatus")
-    public ResponseEntity<ApiResponse<ReservationDto>> updateStatus(
-            @Valid @RequestBody ReservationStatusUpdateRequest request
-    ) {
-        ReservationDto updated = reservationService.updateStatus(request);
-        return ResponseEntity.ok(ApiResponse.ok("Reservation updated", updated));
     }
 
     @PutMapping("/{id}/cancel")

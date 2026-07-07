@@ -18,7 +18,7 @@ public class BookUpdateRequest {
 
     @NotBlank
     @Size(max = 255)
-    private String author;
+    private String authorName;
 
     @NotBlank
     @Size(max = 32)

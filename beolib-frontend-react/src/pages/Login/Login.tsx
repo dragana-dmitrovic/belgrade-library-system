@@ -73,7 +73,7 @@ export function LoginPage() {
           />
         </label>
 
-        <button type="submit" disabled={loading}>
+        <button type="submit" className="gold-button" disabled={loading}>
           {loading ? 'Prijava...' : 'Prijavi se'}
         </button>
       </form>

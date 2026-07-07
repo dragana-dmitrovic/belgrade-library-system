@@ -1,80 +1,87 @@
 .home {
-  padding-bottom: 2.5rem;
+  padding-bottom: 0;
 }
 
 .home-hero {
-  background: var(--color-ink);
-  color: var(--color-paper);
-  padding: 3.5rem 1rem 3rem;
+  padding: 3.5rem 1.25rem 3rem;
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border-soft);
 }
 
 .home-hero-inner {
-  max-width: 960px;
+  max-width: 1140px;
   margin: 0 auto;
 }
 
-.home-hero-kicker {
-  margin: 0 0 0.75rem;
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--color-brass);
+.home-hero-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.home-hero-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.home-hero-logo {
+  width: min(220px, 32vw);
+  height: auto;
+  object-fit: contain;
+  flex-shrink: 0;
+  background: transparent;
+  display: block;
 }
 
 .home-hero h1 {
   margin: 0 0 1rem;
-  max-width: 16ch;
-  font-size: clamp(2rem, 5vw, 2.75rem);
+  max-width: 22ch;
+  font-size: clamp(1.85rem, 4.5vw, 2.75rem);
   line-height: 1.15;
-  color: var(--color-paper);
+  color: var(--text-primary);
+  letter-spacing: 0.025em;
 }
 
 .home-hero-lead {
   margin: 0 0 1.5rem;
-  max-width: 52ch;
-  color: rgba(242, 237, 225, 0.92);
-  font-size: 1.05rem;
+  max-width: 42ch;
+  color: var(--text-secondary);
+  font-size: 1.02rem;
+  line-height: 1.6;
 }
 
-.home-hero-cta {
-  display: inline-block;
+.hero-cta-light {
+  display: inline-flex;
+  align-items: center;
   padding: 0.65rem 1.25rem;
   border-radius: var(--radius-sm);
-  background: var(--color-wine);
-  color: var(--color-paper);
+  background: var(--gold);
+  color: var(--accent-text-on);
   text-decoration: none;
-  font-weight: 600;
-  letter-spacing: 0.01em;
+  font-weight: 700;
+  transition: background var(--transition-fast), transform var(--transition-fast);
 }
 
-.home-hero-cta:hover {
-  filter: brightness(1.06);
+.hero-cta-light:hover {
+  background: var(--gold-hover);
+  transform: translateY(-1px);
 }
 
 .home-section {
-  max-width: 960px;
+  max-width: 1140px;
   margin: 0 auto;
-  padding: 2rem 1rem 0;
-}
-
-.home-section h2 {
-  margin: 0 0 1.25rem;
-  font-size: 1.65rem;
+  padding: 2.5rem 1.25rem 0;
 }
 
 .home-news-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.15rem;
 }
 
 .home-news-card {
-  padding: 1.1rem;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--color-paper);
-  box-shadow: var(--shadow-card);
+  padding: 1.25rem;
 }
 
 .home-news-card-head {
@@ -82,57 +89,60 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.75rem;
 }
 
 .home-news-date {
   margin-left: auto;
-  color: var(--color-ink-soft);
+  color: var(--text-secondary);
 }
 
 .home-news-card h3 {
-  margin: 0 0 0.6rem;
-  font-size: 1.15rem;
-  line-height: 1.3;
-}
-
-.home-news-card p {
-  margin: 0;
-  color: var(--color-ink-soft);
-}
-
-.home-about p {
-  margin: 0 0 1rem;
-  color: var(--color-ink-soft);
-}
-
-.home-about p:last-child {
-  margin-bottom: 0;
+  margin: 0 0 0.65rem;
+  font-size: 1.12rem;
+  line-height: 1.35;
+  color: var(--text-primary);
 }
 
 .home-branches-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
+  gap: 1.15rem;
 }
 
 .home-branch-card {
-  padding: 1rem;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--color-paper-dim);
+  padding: 1.15rem;
 }
 
 .home-branch-card h3 {
   margin: 0 0 0.5rem;
-  font-size: 1.1rem;
+  font-size: 1.12rem;
+  color: var(--gold);
 }
 
 .home-branch-card p {
   margin: 0 0 0.45rem;
-  color: var(--color-ink-soft);
 }
 
 .home-branch-phone {
-  color: var(--color-brass);
+  color: var(--gold);
+  margin-top: 0.35rem;
+}
+
+@media (max-width: 768px) {
+  .home-hero-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .home-hero-logo {
+    width: min(180px, 55vw);
+    align-self: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .home-hero h1 {
+    max-width: none;
+  }
 }

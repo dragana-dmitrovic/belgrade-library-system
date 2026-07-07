@@ -1,6 +1,5 @@
 package rs.beolib.beolibbackend.dto;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,7 +17,6 @@ public class ReservationDto {
     private Long bookCopyId;
     private LocalDateTime reservedAt;
     private LocalDateTime expiresAt;
-    private LocalDate dueDate;
     private String status;
     private String notes;
 }

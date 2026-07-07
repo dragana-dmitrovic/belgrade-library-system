@@ -1,10 +1,14 @@
 import { useCallback, useEffect, useState, type FormEvent } from 'react';
 
-import { createBook, deleteBook, getAllBooks, updateBook } from '../../../api/bookApi';
+import { createBook, deleteBook, getBooksPaged, updateBook } from '../../../api/bookApi';
+import { BookCover } from '../../../components/BookCover/BookCover';
+import { BookPagination } from '../../../components/BookPagination/BookPagination';
 import type { Book, BookCreateRequest, BookUpdateRequest } from '../../../models/book.model';
 import type { BookGenre } from '../../../models/enums.model';
 import { getApiErrorMessage } from '../../../utils/api-error.util';
 import { formatGenre, getGenreOptions } from '../../../utils/genre.util';
+import { AddBookWizard } from './AddBookWizard';
+import './AddBookWizard.css';
 import './AdminBooks.css';
 
 type FormMode = 'create' | 'edit' | null;
@@ -62,7 +66,7 @@ function validateForm(form: BookFormState): string | null {
 function toCreateRequest(form: BookFormState): BookCreateRequest {
   return {
     title: form.title.trim(),
-    author: form.author.trim(),
+    authorName: form.author.trim(),
     isbn: form.isbn.trim(),
     genre: form.genre,
     description: form.description.trim() || undefined,
@@ -79,8 +83,13 @@ function toUpdateRequest(form: BookFormState): BookUpdateRequest {
   };
 }
 
+const ADMIN_PAGE_SIZE = 20;
+
 export function AdminBooksPage() {
   const [books, setBooks] = useState<Book[]>([]);
+  const [page, setPage] = useState(0);
+  const [totalElements, setTotalElements] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
@@ -88,18 +97,35 @@ export function AdminBooksPage() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const [formMode, setFormMode] = useState<FormMode>(null);
+  const [wizardOpen, setWizardOpen] = useState(false);
   const [form, setForm] = useState<BookFormState>(EMPTY_FORM);
   const [formError, setFormError] = useState<string | null>(null);
 
-  const loadBooks = useCallback(async () => {
+  const [searchInput, setSearchInput] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+
+  const loadBooks = useCallback(async (pageToLoad: number, search: string) => {
     setLoading(true);
     setErrorMessage(null);
 
+    const trimmedSearch = search.trim();
+
     try {
-      const data = await getAllBooks();
-      setBooks(data);
+      const data = await getBooksPaged({
+        page: pageToLoad,
+        size: ADMIN_PAGE_SIZE,
+        sortBy: 'title',
+        sortDirection: 'asc',
+        ...(trimmedSearch ? { search: trimmedSearch } : {}),
+      });
+      setBooks(data.values);
+      setPage(data.page);
+      setTotalElements(data.totalElements);
+      setTotalPages(data.totalPages);
     } catch (error) {
       setBooks([]);
+      setTotalElements(0);
+      setTotalPages(0);
       setErrorMessage(getApiErrorMessage(error));
     } finally {
       setLoading(false);
@@ -107,17 +133,47 @@ export function AdminBooksPage() {
   }, []);
 
   useEffect(() => {
-    void loadBooks();
-  }, [loadBooks]);
+    const timer = window.setTimeout(() => {
+      setDebouncedSearch(searchInput);
+      setPage(0);
+    }, 300);
+
+    return () => window.clearTimeout(timer);
+  }, [searchInput]);
+
+  useEffect(() => {
+    void loadBooks(page, debouncedSearch);
+  }, [page, debouncedSearch, loadBooks]);
+
+  function handleClearSearch() {
+    setSearchInput('');
+    setDebouncedSearch('');
+    setPage(0);
+  }
+
+  const hasActiveSearch = debouncedSearch.trim().length > 0;
 
   function openCreateForm() {
+    setWizardOpen(false);
     setFormMode('create');
     setForm(EMPTY_FORM);
     setFormError(null);
     setSuccessMessage(null);
   }
 
+  function openWizard() {
+    setFormMode(null);
+    setWizardOpen(true);
+    setFormError(null);
+    setSuccessMessage(null);
+  }
+
+  function closeWizard() {
+    setWizardOpen(false);
+  }
+
   function openEditForm(book: Book) {
+    setWizardOpen(false);
     setFormMode('edit');
     setForm(bookToForm(book));
     setFormError(null);
@@ -128,6 +184,12 @@ export function AdminBooksPage() {
     setFormMode(null);
     setForm(EMPTY_FORM);
     setFormError(null);
+  }
+
+  function handleWizardSuccess(message: string) {
+    setWizardOpen(false);
+    setSuccessMessage(message);
+    void loadBooks(page, debouncedSearch);
   }
 
   function updateFormField<K extends keyof BookFormState>(field: K, value: BookFormState[K]) {
@@ -158,7 +220,7 @@ export function AdminBooksPage() {
       }
 
       closeForm();
-      await loadBooks();
+      await loadBooks(page, debouncedSearch);
     } catch (error) {
       setFormError(getApiErrorMessage(error));
     } finally {
@@ -179,12 +241,17 @@ export function AdminBooksPage() {
     setSuccessMessage(null);
 
     try {
+      const wasLastOnPage = books.length === 1;
       await deleteBook(book.id);
       setSuccessMessage('Knjiga je uspešno obrisana.');
       if (formMode === 'edit' && form.id === book.id) {
         closeForm();
       }
-      await loadBooks();
+      if (wasLastOnPage && page > 0) {
+        setPage((current) => current - 1);
+      } else {
+        await loadBooks(page, debouncedSearch);
+      }
     } catch (error) {
       setErrorMessage(getApiErrorMessage(error));
     } finally {
@@ -193,18 +260,27 @@ export function AdminBooksPage() {
   }
 
   return (
-    <div className="page">
+    <div className="page-shell">
       <div className="page-header">
-        <h1>Admin — knjige</h1>
-        <button type="button" className="primary-button" onClick={openCreateForm}>
-          Dodaj novu knjigu
-        </button>
+        <h1>Knjige</h1>
+        <div className="page-header-actions">
+          <button type="button" className="primary-button" onClick={openWizard}>
+            Dodaj preko ISBN-a
+          </button>
+          <button type="button" className="secondary-button" onClick={openCreateForm}>
+            Ručni unos
+          </button>
+        </div>
       </div>
 
       {successMessage && (
         <p className="message success page-feedback">{successMessage}</p>
       )}
       {errorMessage && <p className="message error page-feedback">{errorMessage}</p>}
+
+      {wizardOpen && (
+        <AddBookWizard onClose={closeWizard} onSuccess={handleWizardSuccess} />
+      )}
 
       {formMode && (
         <form className="admin-form" onSubmit={handleSubmit}>
@@ -289,12 +365,13 @@ export function AdminBooksPage() {
             </label>
 
             <label className="full-width">
-              URL slike (opciono)
+              URL slike korica (opciono)
               <input
-                type="url"
+                type="text"
                 value={form.coverImageUrl}
                 onChange={(event) => updateFormField('coverImageUrl', event.target.value)}
                 maxLength={1024}
+                placeholder="/book-covers/naziv.jpg ili https://..."
               />
             </label>
 
@@ -320,57 +397,101 @@ export function AdminBooksPage() {
         </form>
       )}
 
-      {loading ? (
+      <div className="admin-books-toolbar">
+        <label className="admin-books-search">
+          Pretraga
+          <div className="admin-books-search-row">
+            <input
+              type="search"
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
+              placeholder="Pretraži po naslovu, autoru ili ISBN-u..."
+            />
+            {searchInput && (
+              <button type="button" className="secondary-button" onClick={handleClearSearch}>
+                Obriši
+              </button>
+            )}
+          </div>
+        </label>
+      </div>
+
+      {loading && books.length === 0 ? (
         <p className="loading-state">Učitavanje knjiga...</p>
       ) : books.length === 0 ? (
-        <div className="empty-state">Nema knjiga u katalogu.</div>
-      ) : (
-        <div className="data-table-wrap">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th>Naslov</th>
-                <th>Autor</th>
-                <th>ISBN</th>
-                <th>Žanr</th>
-                <th>Dostupnost</th>
-                <th>Akcije</th>
-              </tr>
-            </thead>
-            <tbody>
-              {books.map((book) => (
-                <tr key={book.id}>
-                  <td>{book.title}</td>
-                  <td>{book.author}</td>
-                  <td>{book.isbn}</td>
-                  <td>{formatGenre(book.genre)}</td>
-                  <td>
-                    {book.availableCopies} / {book.totalCopies}
-                  </td>
-                  <td>
-                    <div className="row-actions">
-                      <button
-                        type="button"
-                        className="edit-button"
-                        onClick={() => openEditForm(book)}
-                      >
-                        Izmeni
-                      </button>
-                      <button
-                        type="button"
-                        className="delete-button"
-                        disabled={deletingId === book.id}
-                        onClick={() => void handleDelete(book)}
-                      >
-                        {deletingId === book.id ? 'Brisanje...' : 'Obriši'}
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div className="empty-state">
+          {hasActiveSearch
+            ? 'Nema knjiga koje odgovaraju pretrazi.'
+            : 'Nema knjiga u katalogu.'}
         </div>
+      ) : (
+        <>
+          <div className={`data-table-wrap${loading ? ' data-table-wrap-loading' : ''}`}>
+            <table className="data-table">
+              <thead>
+                <tr>
+                  <th>Korica</th>
+                  <th>Naslov</th>
+                  <th>Autor</th>
+                  <th>ISBN</th>
+                  <th>Žanr</th>
+                  <th>Dostupnost</th>
+                  <th>Akcije</th>
+                </tr>
+              </thead>
+              <tbody>
+                {books.map((book) => (
+                  <tr key={book.id}>
+                    <td>
+                      <BookCover
+                        coverImageUrl={book.coverImageUrl}
+                        title={book.title}
+                        author={book.author}
+                        imageClassName="admin-book-cover-thumb"
+                        fallbackClassName="admin-book-cover-fallback"
+                      />
+                    </td>
+                    <td>{book.title}</td>
+                    <td>{book.author}</td>
+                    <td>{book.isbn}</td>
+                    <td>{formatGenre(book.genre)}</td>
+                    <td>
+                      {book.availableCopies} / {book.totalCopies}
+                    </td>
+                    <td>
+                      <div className="row-actions">
+                        <button
+                          type="button"
+                          className="edit-button"
+                          onClick={() => openEditForm(book)}
+                        >
+                          Izmeni
+                        </button>
+                        <button
+                          type="button"
+                          className="delete-button"
+                          disabled={deletingId === book.id}
+                          onClick={() => void handleDelete(book)}
+                        >
+                          {deletingId === book.id ? 'Brisanje...' : 'Obriši'}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {loading && <p className="loading-state admin-books-loading">Učitavanje knjiga...</p>}
+          <BookPagination
+            page={page}
+            totalPages={totalPages}
+            totalElements={totalElements}
+            loading={loading}
+            onPrevious={() => setPage((current) => Math.max(0, current - 1))}
+            onNext={() => setPage((current) => current + 1)}
+          />
+        </>
       )}
     </div>
   );

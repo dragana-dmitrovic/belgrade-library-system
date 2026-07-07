@@ -44,3 +44,19 @@ projekat log.txt
 # Keep examples
 !**/src/main/resources/application-example.properties
 !**/src/main/resources/application-example.yml
+
+# Old Angular frontend - not used
+beolib-frontend-angularstart/
+
+# Local database helper scripts/backups
+database/
+delete-test.log
+
+# Build folders
+target/
+node_modules/
+dist/
+
+# Environment files
+.env
+.env.local

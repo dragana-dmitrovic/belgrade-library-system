@@ -1,142 +1,220 @@
+.book-details-page {
+  max-width: 1020px;
+}
+
 .book-details-layout {
   display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 1.5rem;
-  background: var(--color-paper);
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  padding: 1.25rem;
-  box-shadow: var(--shadow-card);
+  grid-template-columns: minmax(240px, 300px) 1fr;
+  gap: 2rem;
+  padding: 1.65rem;
+  margin-top: 0.5rem;
 }
 
 @media (max-width: 720px) {
   .book-details-layout {
     grid-template-columns: 1fr;
+    padding: 1.25rem;
   }
 }
 
 .book-cover {
   width: 100%;
-  max-height: 320px;
+  max-height: 460px;
   object-fit: cover;
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-soft);
+  box-shadow: var(--shadow-card);
 }
 
-.book-cover-placeholder {
-  width: 100%;
-  min-height: 220px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-paper-dim);
+.book-details-cover-wrap {
+  min-height: 320px;
+}
+
+.book-details-cover-wrap .book-cover-fallback {
+  min-height: 320px;
   border-radius: var(--radius-md);
-  color: var(--color-ink-soft);
-  font-size: 0.95rem;
+  box-shadow: var(--shadow-card);
 }
 
 .book-meta {
   display: grid;
-  gap: 0.5rem;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
 }
 
 .book-meta p {
   margin: 0;
+  line-height: 1.55;
+  color: var(--text-primary);
 }
 
 .book-meta strong {
   display: inline-block;
-  min-width: 110px;
+  min-width: 118px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 600;
 }
 
 .book-actions {
-  margin-top: 1.25rem;
+  margin-top: 0.5rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.85rem;
 }
 
 .book-actions button {
   align-self: flex-start;
-  padding: 0.55rem 1rem;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: var(--color-wine);
-  color: var(--color-paper);
-  font: inherit;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.book-actions button:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
 }
 
 .admin-note {
   margin: 0;
-  color: var(--color-ink-soft);
+  color: var(--text-secondary);
   font-style: italic;
 }
 
 .book-actions a {
-  color: var(--color-wine);
+  color: var(--gold);
   font-weight: 600;
 }
 
 .reservation-form {
-  margin-top: 1rem;
-  padding: 1rem;
-  border: 1px solid var(--border-subtle);
-  border-radius: var(--radius-md);
-  background: var(--color-paper-dim);
+  margin-top: 0.5rem;
+  padding: 1.25rem;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  max-width: 420px;
+  gap: 0.85rem;
+  max-width: 440px;
 }
 
-.reservation-form label {
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-  font-weight: 600;
-}
-
-.reservation-form input,
-.reservation-form select,
-.reservation-form textarea {
-  padding: 0.5rem;
-  border: 1px solid var(--border-medium);
-  border-radius: var(--radius-sm);
-  font: inherit;
-  background: var(--color-paper);
+.reservation-form h2 {
+  margin: 0 0 0.25rem;
+  font-size: 1.15rem;
+  color: var(--text-primary);
 }
 
 .reservation-form textarea {
-  min-height: 80px;
+  min-height: 88px;
   resize: vertical;
 }
 
 .reservation-form-actions {
   display: flex;
-  gap: 0.5rem;
-}
-
-.reservation-form-actions button.secondary {
-  background: var(--color-paper);
-  color: var(--color-wine);
-  border: 1px solid var(--color-wine);
+  flex-wrap: wrap;
+  gap: 0.55rem;
 }
 
 .back-link {
   display: inline-block;
-  margin-bottom: 1rem;
-  color: var(--color-wine);
+  margin-bottom: 1.25rem;
+  color: var(--gold);
   text-decoration: none;
   font-weight: 600;
+  font-size: 0.92rem;
 }
 
 .back-link:hover {
-  text-decoration: underline;
+  color: var(--gold-hover);
+}
+
+.book-reviews-section {
+  margin-top: 2.5rem;
+}
+
+.book-reviews-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem 1.5rem;
+  margin-bottom: 1.15rem;
+}
+
+.book-reviews-header h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  color: var(--text-primary);
+}
+
+.book-reviews-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem 1rem;
+}
+
+.book-reviews-average {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0;
+}
+
+.book-reviews-average-value {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.book-reviews-count {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+}
+
+.book-reviews-empty {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.book-reviews-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.15rem;
+}
+
+.book-review-card {
+  padding: 1.15rem 1.2rem;
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.book-review-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card);
+}
+
+.book-review-card-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.65rem;
+}
+
+.book-review-author {
+  margin: 0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.book-review-comment {
+  margin: 0 0 0.75rem;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  line-height: 1.5;
+  font-size: 0.94rem;
+}
+
+.book-review-date {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
 }
