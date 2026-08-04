@@ -445,6 +445,7 @@ export function AdminBooksPage() {
                     <td>
                       <BookCover
                         coverImageUrl={book.coverImageUrl}
+                        isbn={book.isbn}
                         title={book.title}
                         author={book.author}
                         imageClassName="admin-book-cover-thumb"

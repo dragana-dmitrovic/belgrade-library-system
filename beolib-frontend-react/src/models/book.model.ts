@@ -8,7 +8,7 @@ export interface Book {
   isbn: string;
   genre: BookGenre | string;
   description: string;
-  coverImageUrl: string;
+  coverImageUrl: string | null;
   totalCopies: number;
   availableCopies: number;
   selectedBranchTotalCopies?: number | null;

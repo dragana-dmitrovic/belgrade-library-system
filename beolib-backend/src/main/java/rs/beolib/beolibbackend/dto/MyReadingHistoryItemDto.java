@@ -13,6 +13,7 @@ public class MyReadingHistoryItemDto {
     private String title;
     private String author;
     private BookGenre genre;
+    private String isbn;
     private String coverImageUrl;
     private LocalDateTime returnedAt;
     private LocalDate dueDate;

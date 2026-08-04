@@ -195,6 +195,7 @@ public class ReadingHistoryService {
         dto.setTitle(book.getTitle());
         dto.setAuthor(book.getAuthor() != null ? book.getAuthor().getName() : null);
         dto.setGenre(book.getGenre());
+        dto.setIsbn(book.getIsbn());
         dto.setCoverImageUrl(book.getCoverImageUrl());
         dto.setReturnedAt(loan.getReturnedAt());
         dto.setDueDate(loan.getDueDate());

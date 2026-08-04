@@ -7,6 +7,7 @@ export interface MyReadingHistoryItem {
   title: string;
   author: string;
   genre: BookGenre;
+  isbn: string;
   coverImageUrl?: string | null;
   returnedAt: string;
   dueDate: string;

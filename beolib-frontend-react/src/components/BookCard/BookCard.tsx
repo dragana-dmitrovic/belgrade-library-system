@@ -31,6 +31,7 @@ export function BookCard({
         <div className="book-card-cover-wrap">
           <BookCover
             coverImageUrl={book.coverImageUrl}
+            isbn={book.isbn}
             title={book.title}
             author={book.author}
             imageClassName="book-card-cover"

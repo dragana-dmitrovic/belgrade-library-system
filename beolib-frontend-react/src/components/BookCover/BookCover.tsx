@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 
+import { resolveBookCoverUrl } from '../../utils/book-cover.util';
 import './BookCover.css';
 
 interface BookCoverProps {
   coverImageUrl?: string | null;
+  isbn?: string | null;
   title: string;
   author?: string;
   imageClassName?: string;
@@ -12,13 +14,14 @@ interface BookCoverProps {
 
 export function BookCover({
   coverImageUrl,
+  isbn,
   title,
   author = '',
   imageClassName = 'book-cover-image',
   fallbackClassName = '',
 }: BookCoverProps) {
   const [imageFailed, setImageFailed] = useState(false);
-  const url = coverImageUrl?.trim();
+  const url = resolveBookCoverUrl(coverImageUrl, isbn);
 
   useEffect(() => {
     setImageFailed(false);

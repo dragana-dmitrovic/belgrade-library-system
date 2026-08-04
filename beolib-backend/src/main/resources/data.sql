@@ -112,8 +112,8 @@ INSERT IGNORE INTO branch_book_inventory (id, book_id, branch_id, total_copies, 
 (50, 14, 4, 1, 1, 0),
 (51, 14, 5, 1, 1, 0);
 
-CREATE INDEX IF NOT EXISTS idx_books_author_id ON books(author_id);
-CREATE INDEX IF NOT EXISTS idx_authors_name ON authors(name);
-CREATE INDEX IF NOT EXISTS idx_books_title ON books(title);
-CREATE INDEX IF NOT EXISTS idx_books_genre ON books(genre);
-CREATE INDEX IF NOT EXISTS idx_books_isbn ON books(isbn);
+--CREATE INDEX IF NOT EXISTS idx_books_author_id ON books(author_id);
+--CREATE INDEX IF NOT EXISTS idx_authors_name ON authors(name);
+--CREATE INDEX IF NOT EXISTS idx_books_title ON books(title);
+--CREATE INDEX IF NOT EXISTS idx_books_genre ON books(genre);
+--CREATE INDEX IF NOT EXISTS idx_books_isbn ON books(isbn);

@@ -116,6 +116,7 @@ function HistoryCard({
       <div className="history-card-cover">
         <BookCover
           coverImageUrl={item.coverImageUrl}
+          isbn={item.isbn}
           title={item.title}
           author={item.author}
           imageClassName="history-cover-image"
