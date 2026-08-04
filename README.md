@@ -1,11 +1,20 @@
 # BeoLib - Belgrade Library System
 
 BeoLib is a full-stack web application for managing a library system.
-
 The project consists of a Spring Boot backend and a React frontend. The application supports public book browsing, member registration and reservations, librarian book management, circulation workflows, reading history, reviews, and inventory tracking across library branches.
+The project is fully containerized using Docker Compose and can be started with a single command.
 
 ---
-
+## Highlights
+- Full-stack Spring Boot + React application
+- JWT authentication and role-based authorization
+- Docker Compose support
+- React production build served by Nginx
+- MySQL database with automatic initialization
+- Open Library API integration
+- ISBN-based book creation
+- Multi-branch inventory management
+- Reading history and reviews
 ## Project Structure
 
     beolib
@@ -23,6 +32,25 @@ The project consists of a Spring Boot backend and a React frontend. The applicat
     │
     ├── .gitignore
     └── README.md
+
+## Docker Support
+
+The application is fully containerized using Docker Compose.
+
+Start the entire system with:
+docker compose up --build
+
+Available services:
+Frontend: http://localhost:5173
+Backend API: http://localhost:8080
+
+Stop the application:
+docker compose down
+
+Recreate the database:
+docker compose down -v
+docker compose up --build
+
 
 ---
 
@@ -70,6 +98,8 @@ The project consists of a Spring Boot backend and a React frontend. The applicat
 - MySQL
 - REST API
 - Open Library API integration
+- Docker
+- Docker Compose
 
 ### Frontend
 
@@ -83,6 +113,7 @@ The project consists of a Spring Boot backend and a React frontend. The applicat
 - Context API
 - Protected routes
 - Reusable UI components
+- Nginx
 
 ---
 
@@ -346,9 +377,23 @@ Frontend:
 
 ## Repository Status
 
-This version of BeoLib includes the completed full-stack implementation with Spring Boot backend and React frontend.
+This version of BeoLib provides a fully functional full-stack library management system.
 
-The current version includes authentication, role-based access control, book catalog, librarian administration, ISBN workflow, pagination, branch inventory, reservations, circulation, reading history, reviews, and improved UI components.
+The application includes:
+
+- Spring Boot REST API
+- React + TypeScript frontend
+- JWT authentication
+- Role-based authorization
+- Dockerized deployment
+- MySQL database
+- Automatic database initialization
+- Open Library integration
+- Reading history and reviews
+- Reservation and circulation workflows
+- Branch inventory management
+
+The complete application can be started with a single Docker Compose command.
 
 ---
 
