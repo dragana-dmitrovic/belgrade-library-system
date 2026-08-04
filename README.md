@@ -15,6 +15,38 @@ The project is fully containerized using Docker Compose and can be started with 
 - ISBN-based book creation
 - Multi-branch inventory management
 - Reading history and reviews
+
+## Screenshots
+
+### Home Page
+
+![Home](screenshots/home.png)
+
+### Login
+
+![Login](screenshots/login.png)
+
+### Books
+
+![Books](screenshots/books.png)
+
+### Book Details
+
+![Book Details](screenshots/book-details.png)
+
+### Reading History
+
+![Reading History](screenshots/reading-history.png)
+
+### Admin Books
+
+![Admin Books](screenshots/admin-books.png)
+
+### Admin Circulation
+
+![Admin Circulation](screenshots/admin-circulation.png)
+
+
 ## Project Structure
 
     beolib
