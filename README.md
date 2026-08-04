@@ -44,7 +44,7 @@ The project is fully containerized using Docker Compose and can be started with 
 
 ### Admin Circulation
 
-![Admin Circulation](screenshots/admin-circulation.png)
+![Admin Circulation](screenshots/book-circulation.png)
 
 
 ## Project Structure
